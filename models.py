@@ -1,5 +1,6 @@
 """Models for interaction with database."""
 
+from datetime import date
 import peewee
 
 db = peewee.SqliteDatabase('VMK_temp.db')
@@ -15,6 +16,13 @@ class User(peewee.Model):
     mac_address = peewee.FixedCharField(null=True, max_length=64)
     public_key = peewee.FixedCharField(null=True, max_length=64)
     lang = peewee.FixedCharField(max_length=2, null=False, default="ru")
+
+    def is_subscribed(self) -> bool:
+        """Check is user subscribed or not.
+
+        :rtype: bool
+        """
+        return self.sub_due_date and self.sub_due_date > date.today()
 
     class Meta:  # noqa: D106 pylint: disable=missing-class-docstring
         database = db
